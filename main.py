@@ -1,6 +1,7 @@
 import pytube
 import os
 from playsound import playsound
+import json
 
 
 class Colors:
@@ -65,11 +66,15 @@ def Download(videoAddress):
 
 
         filename = input(f"{Colors.Yellow}Please enter a file name, leave empty if default{Colors.White}: ")
-        output_directory = input(f"{Colors.Yellow}Please enter an output directory, leave empty if on Audio Folder{Colors.White}: ")
+        output_directory = input(f"{Colors.Yellow}Please enter an output directory, leave empty if on Default Folder{Colors.White}: ")
         print(f"{Colors.Green}Downloading.....")
 
         if output_directory == "":
-            output_directory = "./Audio"
+            with open("./defaults.json","r") as f:
+                data = json.load(f)
+            
+            output_directory = data["output_directory"]
+            print(output_directory)
 
         if filename == "":
         
@@ -94,7 +99,7 @@ def Download(videoAddress):
 
     except Exception as e:
         print(f"{Colors.White} {e}")
-        print(f"{Colors.Red} Audio Failed to download {Colors.White}")
+        print(f"{Colors.Red}Audio Failed to download, press any key to try again {Colors.White}")
         input()
         main()
 
@@ -112,23 +117,36 @@ def Play():
     playsound(sound)
     
 
+def changePath():
+    with open("./defaults.json", 'w') as f:
 
+        path = input(f"{Colors.Red}WARNING: Make sure this path is correct, if its wrong and you use it, the file will not download\n{Colors.Yellow}Change the output Path to: ")
+        data = {"output": path}
+        json.dump(data,f)
+        input(f"{Colors.Green}Changed Default Output Path..")
+        main()
+
+    
 
 
 def main():
     os.system("cls")
     textArt()
 
-    choice = input(f"{Colors.Yellow}What would you like to do?\n1.Download\n2.Play{Colors.White}\n")
-    if choice in ["1","2", "download", "play"]:
+    choice = input(f"{Colors.Yellow}What would you like to do?\n1.Download\n2.Play\n3.Change Default Output Path\n4.Exit{Colors.White}\n")
+    if choice in ["1","2", "download", "play", "3", "change", "path", "output", "default", "4", "exit", "leave", "end"]:
         if choice in ["1","download"]:
             os.system("cls")
             textArt()
-            url = input("Type the URL of the video: ")
+            url = input(f"{Colors.Yellow}Type the URL of the video{Colors.White}: ")
             Download(url)
-        else:
+        elif choice in ["2","play"]:
             Play()
             exitOption("Would you like to play another Audio file? y/n: ", 1)
+        elif choice in ["end", "leave", "exit", "4"]:
+            print(f"{Colors.White}Thank you for using..")
+        else:
+            changePath()
             
     else:
         input(f"{Colors.Red}Invaild Input...")
