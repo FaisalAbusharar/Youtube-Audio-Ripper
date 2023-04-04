@@ -65,10 +65,15 @@ def Download(videoAddress):
 
 
         filename = input(f"{Colors.Yellow}Please enter a file name, leave empty if default{Colors.White}: ")
+        output_directory = input(f"{Colors.Yellow}Please enter an output directory, leave empty if on Audio Folder{Colors.White}: ")
         print(f"{Colors.Green}Downloading.....")
+
+        if output_directory == "":
+            output_directory = "./Audio"
+
         if filename == "":
         
-            out_file = audio.download(output_path="./Audio")
+            out_file = audio.download(output_path=output_directory)
             
             base, ext = os.path.splitext(out_file)
             new_filename = base + '.mp3'
@@ -76,7 +81,7 @@ def Download(videoAddress):
             os.rename(out_file, new_filename)
         else:
               
-            audio.download("./Audio", filename=filename + ".mp3")
+            audio.download(output_path=output_directory, filename=filename + ".mp3")
 
         os.system("cls")
        
